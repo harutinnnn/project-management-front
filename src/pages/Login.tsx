@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Lock, Mail, ArrowRight, Github, Chrome } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import React, {useState} from 'react';
+import {useNavigate, useLocation} from 'react-router-dom';
+import {Lock, Mail, ArrowRight, Github, Chrome} from 'lucide-react';
+import axios from 'axios';
+import {useAuth} from '../hooks/useAuth';
+
+const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const { login } = useAuth();
+    const [error, setError] = useState<string | null>(null);
+    const {login} = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -15,14 +19,30 @@ const Login: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null);
         setIsLoading(true);
 
-        // Simulate API call
-        setTimeout(() => {
-            login();
+        try {
+            const {data} = await axios.post<{ token?: string }>(`${API_BASE}/login`, {
+                email,
+                password,
+            });
+            login(data?.token);
+            navigate(from, {replace: true});
+        } catch (err) {
+            if (axios.isAxiosError(err)) {
+                const message =
+                    err.response?.data?.message ??
+                    err.response?.data?.error ??
+                    err.message ??
+                    'Login failed. Please try again.';
+                setError(String(message));
+            } else {
+                setError('Login failed. Please try again.');
+            }
+        } finally {
             setIsLoading(false);
-            navigate(from, { replace: true });
-        }, 1500);
+        }
     };
 
     return (
@@ -51,17 +71,19 @@ const Login: React.FC = () => {
                     margin: '0 auto 1.5rem',
                     boxShadow: '0 0 30px var(--primary-glow)'
                 }}>
-                    <Lock size={30} color="white" />
+                    <Lock size={30} color="white"/>
                 </div>
 
-                <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Welcome Back</h1>
-                <p style={{ color: 'var(--text-muted)', marginBottom: '2.5rem' }}>
+                <h1 style={{fontSize: '2rem', marginBottom: '0.5rem'}}>Welcome Back</h1>
+                <p style={{color: 'var(--text-muted)', marginBottom: '2.5rem'}}>
                     Please enter your details to sign in.
                 </p>
 
-                <form onSubmit={handleSubmit} style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-muted)' }}>Email Address</label>
+                <form onSubmit={handleSubmit}
+                      style={{textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '1.25rem'}}>
+                    <div style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}}>
+                        <label style={{fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-muted)'}}>Email
+                            Address</label>
                         <div style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -70,7 +92,7 @@ const Login: React.FC = () => {
                             borderRadius: '12px',
                             padding: '0 1rem'
                         }}>
-                            <Mail size={18} color="var(--text-muted)" />
+                            <Mail size={18} color="var(--text-muted)"/>
                             <input
                                 type="email"
                                 required
@@ -89,8 +111,9 @@ const Login: React.FC = () => {
                         </div>
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-muted)' }}>Password</label>
+                    <div style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}}>
+                        <label
+                            style={{fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-muted)'}}>Password</label>
                         <div style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -99,7 +122,7 @@ const Login: React.FC = () => {
                             borderRadius: '12px',
                             padding: '0 1rem'
                         }}>
-                            <Lock size={18} color="var(--text-muted)" />
+                            <Lock size={18} color="var(--text-muted)"/>
                             <input
                                 type="password"
                                 required
@@ -117,6 +140,19 @@ const Login: React.FC = () => {
                             />
                         </div>
                     </div>
+
+                    {error && (
+                        <div style={{
+                            padding: '0.75rem 1rem',
+                            background: 'rgba(239, 68, 68, 0.15)',
+                            border: '1px solid rgba(239, 68, 68, 0.4)',
+                            borderRadius: '10px',
+                            color: '#fca5a5',
+                            fontSize: '0.9rem'
+                        }}>
+                            {error}
+                        </div>
+                    )}
 
                     <button
                         type="submit"
@@ -140,17 +176,17 @@ const Login: React.FC = () => {
                         }}
                     >
                         {isLoading ? 'Signing in...' : 'Sign In'}
-                        {!isLoading && <ArrowRight size={18} />}
+                        {!isLoading && <ArrowRight size={18}/>}
                     </button>
                 </form>
 
-                <div style={{ margin: '2rem 0', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>OR CONTINUE WITH</span>
-                    <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
+                <div style={{margin: '2rem 0', display: 'flex', alignItems: 'center', gap: '1rem'}}>
+                    <div style={{flex: 1, height: '1px', background: 'var(--border-color)'}}/>
+                    <span style={{fontSize: '0.8rem', color: 'var(--text-muted)'}}>OR CONTINUE WITH</span>
+                    <div style={{flex: 1, height: '1px', background: 'var(--border-color)'}}/>
                 </div>
 
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{display: 'flex', gap: '1rem'}}>
                     <button style={{
                         flex: 1,
                         display: 'flex',
@@ -165,7 +201,7 @@ const Login: React.FC = () => {
                         cursor: 'pointer',
                         transition: 'background 0.2s'
                     }}>
-                        <Chrome size={18} />
+                        <Chrome size={18}/>
                         Google
                     </button>
                     <button style={{
@@ -182,13 +218,14 @@ const Login: React.FC = () => {
                         cursor: 'pointer',
                         transition: 'background 0.2s'
                     }}>
-                        <Github size={18} />
+                        <Github size={18}/>
                         Github
                     </button>
                 </div>
 
-                <p style={{ marginTop: '2.5rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-                    Don't have an account? <span style={{ color: 'var(--primary-color)', cursor: 'pointer', fontWeight: 600 }}>Sign up</span>
+                <p style={{marginTop: '2.5rem', color: 'var(--text-muted)', fontSize: '0.9rem'}}>
+                    Don't have an account? <span
+                    style={{color: 'var(--primary-color)', cursor: 'pointer', fontWeight: 600}}>Sign up</span>
                 </p>
             </div>
         </div>
