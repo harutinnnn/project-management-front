@@ -23,7 +23,7 @@ const Login: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const {data} = await axios.post<{ token?: string; user?: { name?: string }; name?: string; userName?: string }>(`${API_BASE}/login`, {
+            const {data} = await axios.post<{ token?: string; user?: { name?: string }; name?: string; userName?: string }>(`${API_BASE}/auth/login`, {
                 email,
                 password,
             });

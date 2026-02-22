@@ -50,7 +50,7 @@ const Register: React.FC = () => {
                 user?: { name?: string };
                 name?: string;
                 userName?: string;
-            }>(`${API_BASE}/register`, {
+            }>(`${API_BASE}/auth/register`, {
                 name,
                 email,
                 password,

@@ -4,12 +4,15 @@ import Dashboard from './pages/Dashboard'
 import Analytics from './pages/Analytics'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import ProjectsList from './pages/ProjectsList'
+import ProjectForm from './pages/ProjectForm'
+import TasksList from './pages/TasksList'
+import TaskForm from './pages/TaskForm'
 import ProtectedRoute from './components/ProtectedRoute'
 import { useAuth } from './hooks/useAuth'
 
 // Placeholder components for other routes
 const Customers = () => <div className="animate-fade"><h1>Customers</h1><p style={{ color: 'var(--text-muted)' }}>Customer management table goes here.</p></div>
-const Products = () => <div className="animate-fade"><h1>Products</h1><p style={{ color: 'var(--text-muted)' }}>Product inventory management goes here.</p></div>
 const Messages = () => <div className="animate-fade"><h1>Messages</h1><p style={{ color: 'var(--text-muted)' }}>Inbox and communication center.</p></div>
 const Settings = () => <div className="animate-fade"><h1>Settings</h1><p style={{ color: 'var(--text-muted)' }}>System and profile configurations.</p></div>
 
@@ -34,7 +37,12 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/customers" element={<Customers />} />
-              <Route path="/products" element={<Products />} />
+              <Route path="/projects" element={<ProjectsList />} />
+              <Route path="/projects/new" element={<ProjectForm />} />
+              <Route path="/projects/:id/edit" element={<ProjectForm />} />
+              <Route path="/tasks" element={<TasksList />} />
+              <Route path="/tasks/new" element={<TaskForm />} />
+              <Route path="/tasks/:id/edit" element={<TaskForm />} />
               <Route path="/messages" element={<Messages />} />
               <Route path="/settings" element={<Settings />} />
               {/* Catch all for dashboard */}

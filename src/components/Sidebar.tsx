@@ -2,7 +2,8 @@ import React from 'react';
 import {
   LayoutDashboard,
   Users,
-  ShoppingBag,
+  FolderKanban,
+  CheckSquare,
   Settings,
   BarChart3,
   MessageSquare,
@@ -15,7 +16,8 @@ const navItems = [
   { icon: LayoutDashboard, label: 'Overview', path: '/' },
   { icon: BarChart3, label: 'Analytics', path: '/analytics' },
   { icon: Users, label: 'Customers', path: '/customers' },
-  { icon: ShoppingBag, label: 'Products', path: '/products' },
+  { icon: FolderKanban, label: 'Projects', path: '/projects' },
+  { icon: CheckSquare, label: 'Tasks', path: '/tasks' },
   { icon: MessageSquare, label: 'Messages', path: '/messages' },
   { icon: Settings, label: 'Settings', path: '/settings' },
 ];
