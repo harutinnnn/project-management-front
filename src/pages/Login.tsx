@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {useNavigate, useLocation} from 'react-router-dom';
+import {useNavigate, useLocation, Link} from 'react-router-dom';
 import {Lock, Mail, ArrowRight, Github, Chrome} from 'lucide-react';
 import axios from 'axios';
 import {useAuth} from '../hooks/useAuth';
@@ -23,11 +23,12 @@ const Login: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const {data} = await axios.post<{ token?: string }>(`${API_BASE}/login`, {
+            const {data} = await axios.post<{ token?: string; user?: { name?: string }; name?: string; userName?: string }>(`${API_BASE}/login`, {
                 email,
                 password,
             });
-            login(data?.token);
+            const name = data?.user?.name ?? data?.name ?? data?.userName ?? null;
+            login(data?.token, name ?? undefined);
             navigate(from, {replace: true});
         } catch (err) {
             if (axios.isAxiosError(err)) {
@@ -224,8 +225,8 @@ const Login: React.FC = () => {
                 </div>
 
                 <p style={{marginTop: '2.5rem', color: 'var(--text-muted)', fontSize: '0.9rem'}}>
-                    Don't have an account? <span
-                    style={{color: 'var(--primary-color)', cursor: 'pointer', fontWeight: 600}}>Sign up</span>
+                    Don't have an account?{' '}
+                    <Link to="/register" style={{color: 'var(--primary-color)', fontWeight: 600, textDecoration: 'none'}}>Sign up</Link>
                 </p>
             </div>
         </div>

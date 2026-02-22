@@ -3,6 +3,7 @@ import AdminLayout from './layouts/AdminLayout'
 import Dashboard from './pages/Dashboard'
 import Analytics from './pages/Analytics'
 import Login from './pages/Login'
+import Register from './pages/Register'
 import ProtectedRoute from './components/ProtectedRoute'
 import { useAuth } from './hooks/useAuth'
 
@@ -20,6 +21,9 @@ function App() {
       {/* Public Route */}
       <Route path="/login" element={
         !isAuthenticated ? <Login /> : <Navigate to="/" replace />
+      } />
+      <Route path="/register" element={
+        !isAuthenticated ? <Register /> : <Navigate to="/" replace />
       } />
 
       {/* Protected Routes */}

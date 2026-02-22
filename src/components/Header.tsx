@@ -1,7 +1,9 @@
 import React from 'react';
-import { Search, Bell, Menu, User } from 'lucide-react';
+import { Search, Bell, User } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 
 const Header: React.FC = () => {
+    const { userName } = useAuth();
     return (
         <header className="glass-panel" style={{
             height: 'var(--header-height)',
@@ -91,7 +93,7 @@ const Header: React.FC = () => {
                         <User size={18} color="white" />
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                        <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Alex Rivers</span>
+                        <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{userName ?? 'User'}</span>
                         <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Administrator</span>
                     </div>
                 </div>
