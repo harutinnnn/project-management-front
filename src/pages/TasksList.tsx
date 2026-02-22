@@ -1,8 +1,16 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CheckSquare, Plus, Pencil, Trash2 } from 'lucide-react';
-import { getTasks, deleteTask, getMembers } from '../data/tasksStorage';
+import axios from 'axios';
+import { getTasks, deleteTask } from '../data/tasksStorage';
 import type { Task, TaskPriority, TaskStatus } from '../types/task';
+
+interface UserOption {
+  id: string;
+  name: string;
+}
+
+const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
 
 const priorityLabels: Record<TaskPriority, string> = {
   low: 'Low',
@@ -31,7 +39,38 @@ const statusColors: Record<TaskStatus, string> = {
 const TasksList: React.FC = () => {
   const navigate = useNavigate();
   const [tasks, setTasks] = useState<Task[]>(() => getTasks());
-  const members = useMemo(() => getMembers(), []);
+  const [projectTitles, setProjectTitles] = useState<Record<string, string>>({});
+  const [users, setUsers] = useState<UserOption[]>([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    axios
+      .get<{ id: number | string; title: string }[]>(`${API_BASE}/project`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      })
+      .then((res) => {
+        const list = Array.isArray(res.data) ? res.data : [];
+        const map: Record<string, string> = {};
+        list.forEach((p) => {
+          map[String(p.id)] = p.title || String(p.id);
+        });
+        setProjectTitles(map);
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    axios
+      .get<{ id: number; name: string }[]>(`${API_BASE}/users`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      })
+      .then((res) => {
+        const list = Array.isArray(res.data) ? res.data : [];
+        setUsers(list.map((u) => ({ id: String(u.id), name: u.name ?? '' })));
+      })
+      .catch(() => setUsers([]));
+  }, []);
 
   const refresh = () => setTasks(getTasks());
 
@@ -45,7 +84,7 @@ const TasksList: React.FC = () => {
 
   const getMemberNames = (memberIds: string[]) => {
     return memberIds
-      .map((id) => members.find((m) => m.id === id)?.name)
+      .map((id) => users.find((u) => u.id === id)?.name)
       .filter(Boolean)
       .join(', ') || '—';
   };
@@ -102,6 +141,7 @@ const TasksList: React.FC = () => {
               }}
             >
               <th style={{ textAlign: 'left', padding: '1rem 1.25rem', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)' }}>Title</th>
+              <th style={{ textAlign: 'left', padding: '1rem 1.25rem', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)' }}>Project</th>
               <th style={{ textAlign: 'left', padding: '1rem 1.25rem', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)' }}>Description</th>
               <th style={{ textAlign: 'left', padding: '1rem 1.25rem', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)' }}>Priority</th>
               <th style={{ textAlign: 'left', padding: '1rem 1.25rem', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)' }}>Status</th>
@@ -113,7 +153,7 @@ const TasksList: React.FC = () => {
           <tbody>
             {tasks.length === 0 ? (
               <tr>
-                <td colSpan={7} style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                <td colSpan={8} style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
                   No tasks yet. Create one to get started.
                 </td>
               </tr>
@@ -142,6 +182,9 @@ const TasksList: React.FC = () => {
                       </div>
                       <span style={{ fontWeight: 500 }}>{t.title}</span>
                     </div>
+                  </td>
+                  <td style={{ padding: '1rem 1.25rem', fontSize: '0.9rem' }}>
+                    {t.projectId ? (projectTitles[t.projectId] ?? t.projectId) : '—'}
                   </td>
                   <td style={{ padding: '1rem 1.25rem', color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: '240px' }}>
                     {t.description ? (t.description.length > 60 ? `${t.description.slice(0, 60)}…` : t.description) : '—'}
