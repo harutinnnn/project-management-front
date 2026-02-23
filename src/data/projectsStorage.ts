@@ -1,7 +1,7 @@
-import type { Project, Member } from '../types/project';
+import type { Project, Member } from "../types/project";
 
-const PROJECTS_KEY = 'adin_projects';
-const MEMBERS_KEY = 'adin_members';
+const PROJECTS_KEY = "adin_projects";
+const MEMBERS_KEY = "adin_members";
 
 export function getProjects(): Project[] {
   try {
@@ -43,10 +43,10 @@ export function deleteProject(id: string): void {
 
 // Mock members – can be replaced with API later
 const DEFAULT_MEMBERS: Member[] = [
-  { id: '1', name: 'Alex Rivers', email: 'alex@example.com' },
-  { id: '2', name: 'Jordan Lee', email: 'jordan@example.com' },
-  { id: '3', name: 'Sam Taylor', email: 'sam@example.com' },
-  { id: '4', name: 'Casey Morgan', email: 'casey@example.com' },
+  { id: "1", name: "Alex Rivers", email: "alex@example.com" },
+  { id: "2", name: "Jordan Lee", email: "jordan@example.com" },
+  { id: "3", name: "Sam Taylor", email: "sam@example.com" },
+  { id: "4", name: "Casey Morgan", email: "casey@example.com" },
 ];
 
 export function getMembers(): Member[] {

@@ -1,7 +1,6 @@
-import type { Task } from '../types/task';
-import { getMembers } from './projectsStorage';
+import type { Task } from "../types/task";
 
-const TASKS_KEY = 'adin_tasks';
+const TASKS_KEY = "adin_tasks";
 
 export function getTasks(): Task[] {
   try {
@@ -41,4 +40,4 @@ export function deleteTask(id: string): void {
   saveTasks(getTasks().filter((t) => t.id !== id));
 }
 
-export { getMembers } from './projectsStorage';
+export { getMembers } from "./projectsStorage";

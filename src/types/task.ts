@@ -1,11 +1,12 @@
-export type TaskPriority = 'low' | 'medium' | 'high';
+export type TaskPriority = "low" | "medium" | "high";
 
-export type TaskStatus = 'pending' | 'doing' | 'finished';
+export type TaskStatus = "pending" | "doing" | "finished";
 
 export interface TaskAttachment {
   id: string;
   name: string;
   url?: string;
+  file?: File;
 }
 
 export interface TaskComment {

@@ -1,32 +1,18 @@
-import React from 'react';
-import Sidebar from '../components/Sidebar';
-import Header from '../components/Header';
-
+import React from "react";
+import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
 interface LayoutProps {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
-
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-    return (
-        <div className="layout-container" style={{ minHeight: '100vh', display: 'flex' }}>
-            <Sidebar />
-            <div className="main-wrapper" style={{
-                flex: 1,
-                marginLeft: 'var(--sidebar-width)',
-                display: 'flex',
-                flexDirection: 'column'
-            }}>
-                <Header />
-                <main className="content-area" style={{
-                    marginTop: 'var(--header-height)',
-                    padding: '2rem',
-                    flex: 1
-                }}>
-                    {children}
-                </main>
-            </div>
-        </div>
-    );
+  return (
+    <div className="layout-container style-3ffe5c2b">
+      <Sidebar />
+      <div className="main-wrapper style-77c9e5ce">
+        <Header />
+        <main className="content-area style-e22d0f89">{children}</main>
+      </div>
+    </div>
+  );
 };
-
 export default Layout;
